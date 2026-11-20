@@ -8,15 +8,27 @@
 - 基于检索结果回答问题，资料中没有的内容会明确回答"资料里没有",不编造
 - 支持多轮对话， 能理解上下文(比如先问 DeepSeek, 再问"它是哪个国家的公司")
 
+## 两种运行方式
+
+### 命令行版 (rag.py)
+
+1. 安装依赖: `pip install openai`
+2. 在 `config.py` 中填入你自己的 API key (DeekSeek + 硅基流动)
+3. 运行: `python rag.py`
+
+### 网页版 (hello.py)
+
+1. 安装依赖: `pip install open fastapi uvicorn`
+2. 在 `config.py` 中填入你自己的 API key (DeepSeek + 硅基流动)
+3. 启动服务器: `python -m uvicorn hello:app --reload`
+4. 浏览器访问: `http://127.0.0.1:8000/ask?q=你的问题`
+
 ## 技术要求
 
-- **向量检索**: 调用embedding API 将知识库和问题转为向量，用点积计算相似度
+- **向量检索**: 调用embedding API 将知识库和问题转为向量，用点积计算相似度pyth
 - **Top-3 检索**: 按相似度排序取前三名，并以分数阈值过滤无关内容
 - **防幻觉**: 通过 system 提示词约束模型只依据资料答案
 - **多轮记忆**：通过维护 messages 列表保存对话历史
+- **网页服务**: FastAPI + unicorn 提供在线接口, 浏览器通过 `?q=` 传参, 返回 JSON 格式 (含【依据资料】字段, 可查看检索命中了哪些内容)
 
-## 运行方式
 
-1. 安装依赖: `pip install openai`
-2. 在 `config.py` 中填入你自己的 API key (Deepseek + 硅基流动)
-3. 运行：`python rag.py`
