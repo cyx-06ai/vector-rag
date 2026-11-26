@@ -4,4 +4,8 @@
 !knowledge.txt
 !.gitignore
 !hello.py
+!lang_test.py
+!lang_prompt.py
+!lang_retriever.py
+!lang_rag.py
 !README.md
