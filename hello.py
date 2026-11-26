@@ -1,3 +1,4 @@
+from fastapi.responses import FileResponse
 from fastapi import FastAPI
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_core.prompts import ChatPromptTemplate
@@ -33,6 +34,10 @@ template = ChatPromptTemplate.from_messages([
 chain = template | model
 
 @app.get("/")
+def home():
+    return FileResponse("index.html")
+
+@app.get("/ask")
 def ask(q: str = ""):
     if q == "":
         return {"reply": "请在地址栏后面加上 ?q=你的问题"}
