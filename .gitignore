@@ -9,4 +9,5 @@
 !lang_prompt.py
 !lang_retriever.py
 !lang_rag.py
+!agent.py
 !README.md
