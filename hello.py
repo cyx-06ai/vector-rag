@@ -44,15 +44,18 @@ agent = create_react_agent(
     model,
     [search_knowledge, roll_dice, get_time, get_weather],
     prompt="你是一个助手。需要实时信息或知识性资料时调用工具；回答知识问题时只能依据工具返回的资料，资料里没有就明说，禁止编造。")
+chat_history = []     # 公共备忘录: 存所有聊过的对话
 
 # ===== 接单：每次访问干一次 =====
 @app.get("/")
 def home():
     return FileResponse("index.html")
 
-@app.get("/ask")
-def ask(q: str = ""):
-    if q == "":
-        return {"reply": "请在地址栏后面加上 ?q=你的问题"}
-    result = agent.invoke({"messages": [("user", q)]})
-    return {"reply": result["messages"][-1].content}
+@app.get("/ask") 
+def ask(q: str ):
+    # 金鱼修复：备忘录历史 + 新问题，一起交给 Agent
+    result = agent.invoke({"messages": chat_history + [("user", q)]})
+    reply = result["messages"][-1].content
+    # 双写：把这轮全部记录 (含点单过程) 抄回备忘录
+    chat_history.extend(result["messages"])
+    return {"reply": reply}
