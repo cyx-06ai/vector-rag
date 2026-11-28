@@ -44,7 +44,7 @@ agent = create_react_agent(
     model,
     [search_knowledge, roll_dice, get_time, get_weather],
     prompt="你是一个助手。需要实时信息或知识性资料时调用工具；回答知识问题时只能依据工具返回的资料，资料里没有就明说，禁止编造。")
-chat_history = []     # 公共备忘录: 存所有聊过的对话
+histories = {}     # 本子柜：{访客编号：那个人的对话历史}
 
 # ===== 接单：每次访问干一次 =====
 @app.get("/")
@@ -52,10 +52,12 @@ def home():
     return FileResponse("index.html")
 
 @app.get("/ask") 
-def ask(q: str ):
+def ask(q: str, visitor: str = "default"):
+    # 按编号拿本子；新访客自动发一本新的
+    history = histories.setdefault(visitor, [])
     # 金鱼修复：备忘录历史 + 新问题，一起交给 Agent
-    result = agent.invoke({"messages": chat_history + [("user", q)]})
+    result = agent.invoke({"messages": history + [("user", q)]})
     reply = result["messages"][-1].content
     # 双写：把这轮全部记录 (含点单过程) 抄回备忘录
-    chat_history.extend(result["messages"])
+    history.extend(result["messages"])
     return {"reply": reply}
