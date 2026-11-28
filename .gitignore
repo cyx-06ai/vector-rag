@@ -6,6 +6,7 @@
 !hello.py
 !index.html
 !lang_test.py
+!lang_agent.py
 !lang_prompt.py
 !lang_retriever.py
 !lang_rag.py
